@@ -2,119 +2,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Signup - FloraScan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Signup - FloraScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* General Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #00a86b, #007d57);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+    }
 
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
+    body::before {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(120deg, #4CAF50, #2E7D32, #43e97b, #38f9d7);
+        background-size: 400% 400%;
+        animation: gradientMove 15s ease infinite;
+        z-index: -1;
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
+    .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        padding: 40px 30px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        input {
-            width: 100%;
-            padding: 0.6rem;
-            border: none;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-        }
+    .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
 
-        button {
-            width: 100%;
-            padding: 0.7rem;
-            background-color: #00ffae;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            color: black;
-        }
+    h2 {
+        color: #fff;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
 
-        button:hover {
-            background-color: #00d18e;
-        }
+    label {
+        display: block;
+        margin: 10px 0 5px;
+        text-align: left;
+        color: #e0f7fa;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
 
-        p {
-            text-align: center;
-            margin-top: 1rem;
-        }
+    input[type="text"], input[type="email"], input[type="password"] {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
 
-        a {
-            color: #ffdd57;
-            text-decoration: none;
-        }
+    input:focus {
+        outline: none;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.7);
+    }
 
-        a:hover {
-            text-decoration: underline;
-        }
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #00bfa5;
+        color: #fff;
+        border: none;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
 
-        .error-message {
-            background: rgba(255,0,0,0.2);
-            padding: 0.5rem;
-            border-radius: 5px;
-            color: #ffcccc;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-    </style>
+    button:hover {
+        background-color: #00e5ff;
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .links {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .links a {
+        color: #e0f7fa;
+        text-decoration: none;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+
+    .links a:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    /* Message box */
+    .message-box {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        min-width: 250px;
+        padding: 1rem 1.2rem;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        color: white;
+        animation: slideIn 0.5s ease forwards;
+    }
+
+    .message-error { background-color: rgba(255, 69, 58, 0.9); }
+    .message-success { background-color: rgba(76, 175, 80, 0.9); }
+
+    @keyframes slideIn {
+        0% { opacity: 0; transform: translateX(-50px); }
+        100% { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .container { padding: 30px 20px; width: 90%; }
+        h2 { font-size: 1.5rem; }
+    }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h2>Create Account - FloraScan</h2>
+<div class="container">
+    <h2>Create Account - FloraScan</h2>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="error-message">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message-box {% if message.tags %}message-{{ message.tags }}{% else %}message-info{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-        <form method="post">
-            {% csrf_token %}
-            <label>Username</label>
-            <input type="text" name="username" required>
+    <form method="post">
+        {% csrf_token %}
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter your username" required>
 
-            <label>Email</label>
-            <input type="email" name="email" required>
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
 
-            <label>Password</label>
-            <input type="password" name="password" required>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required>
 
-            <label>Confirm Password</label>
-            <input type="password" name="confirm_password" required>
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" placeholder="Confirm your password" required>
 
-            <button type="submit">Sign Up</button>
-        </form>
+        <button type="submit">Sign Up</button>
+    </form>
 
+    <div class="links">
         <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
         <p><a href="{% url 'forgot_password' %}">Forgot Password?</a></p>
     </div>
+</div>
 </body>
 </html>

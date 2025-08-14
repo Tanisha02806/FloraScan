@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from .models import FarmerUser
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import logout as auth_logout
+import re
 
 def home(request):
     return render(request, "home.html")
@@ -21,18 +22,35 @@ def signup_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
+        # Check if email already exists
         if FarmerUser.objects.filter(email=email).exists():
             messages.error(request, "Email is already registered.")
-        elif password != confirm_password:
+            return redirect('signup')
+
+        # Check if passwords match
+        if password != confirm_password:
             messages.error(request, "Passwords do not match.")
-        else:
-            FarmerUser.objects.create(
-                username=username,
-                email=email,
-                password=make_password(password)
+            return redirect('signup')
+
+        # Password complexity check
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$'
+        if not re.match(pattern, password):
+            messages.error(
+                request,
+                "Password must be at least 8 characters long and include an uppercase letter, "
+                "a lowercase letter, a number, and a special character (!@#$%^&*)."
             )
-            messages.success(request, "Account created successfully. Please log in.")
-            return redirect('login')  # Redirect to login page after signup
+            return redirect('signup')
+
+        # Create new user
+        FarmerUser.objects.create(
+            username=username,
+            email=email,
+            password=make_password(password)
+        )
+
+        messages.success(request, "Account created successfully. Please log in.")
+        return redirect('login')  # Redirect to login page after signup
 
     return render(request, "registration/signup.html")
 
@@ -148,7 +166,8 @@ def reset_password_view(request):
 
 def logout_view(request):
     auth_logout(request)
-    return redirect('login')
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('home')
 
 @login_required
 def dashboard_view(request):

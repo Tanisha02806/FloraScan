@@ -9,3 +9,12 @@ class FarmerUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']  # Keep username but email will be used for login
+
+class ScanHistory(models.Model):
+    user = models.ForeignKey('FarmerUser', on_delete=models.CASCADE)
+    disease = models.CharField(max_length=255)
+    confidence = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.disease} ({self.confidence}%)"

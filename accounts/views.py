@@ -1,20 +1,22 @@
 import random
 import datetime
+import re
+import json
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.core.mail import send_mail
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
-from .models import FarmerUser
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout as auth_logout
-import re
+from .models import FarmerUser
+from accounts.models import ScanHistory  # Make sure this model exists
 
+# Home Page
 def home(request):
     return render(request, "home.html")
 
-
+# Signup View
 def signup_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -22,17 +24,14 @@ def signup_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
-        # Check if email already exists
         if FarmerUser.objects.filter(email=email).exists():
             messages.error(request, "Email is already registered.")
             return redirect('signup')
 
-        # Check if passwords match
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
             return redirect('signup')
 
-        # Password complexity check
         pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$'
         if not re.match(pattern, password):
             messages.error(
@@ -42,7 +41,6 @@ def signup_view(request):
             )
             return redirect('signup')
 
-        # Create new user
         FarmerUser.objects.create(
             username=username,
             email=email,
@@ -50,11 +48,11 @@ def signup_view(request):
         )
 
         messages.success(request, "Account created successfully. Please log in.")
-        return redirect('login')  # Redirect to login page after signup
+        return redirect('login')
 
     return render(request, "registration/signup.html")
 
-
+# Login View
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -82,7 +80,7 @@ def login_view(request):
 
     return render(request, "registration/login.html")
 
-
+# OTP Verification
 def verify_otp_view(request):
     email = request.session.get('email')
     if not email:
@@ -96,18 +94,17 @@ def verify_otp_view(request):
 
     if request.method == "POST":
         otp_entered = request.POST.get("otp")
-
-        if (user.otp == otp_entered and timezone.now() - user.otp_created_at <= datetime.timedelta(minutes=5)):
+        if user.otp == otp_entered and timezone.now() - user.otp_created_at <= datetime.timedelta(minutes=5):
             auth_login(request, user)
             user.otp = None
             user.save()
-            return redirect('dashboard')  # Redirect to dashboard after OTP verification
+            return redirect('dashboard')
         else:
             messages.error(request, "Invalid or expired OTP.")
 
     return render(request, "registration/verify_otp.html")
 
-
+# Forgot Password
 def forgot_password_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -134,7 +131,7 @@ def forgot_password_view(request):
 
     return render(request, "registration/forgot_password.html")
 
-
+# Reset Password
 def reset_password_view(request):
     email = request.session.get('reset_email')
     if not email:
@@ -151,14 +148,10 @@ def reset_password_view(request):
         new_password = request.POST.get("new_password")
         confirm_password = request.POST.get("confirm_password")
 
-        # Check OTP validity
-        if user.otp != otp_entered or timezone.now() - user.otp_created_at > timezone.timedelta(minutes=5):
+        if user.otp != otp_entered or timezone.now() - user.otp_created_at > datetime.timedelta(minutes=5):
             messages.error(request, "Invalid or expired OTP.")
-
-        # Check if passwords match
         elif new_password != confirm_password:
             messages.error(request, "Passwords do not match.")
-
         else:
             user.password = make_password(new_password)
             user.otp = None
@@ -168,23 +161,55 @@ def reset_password_view(request):
 
     return render(request, "registration/reset_password.html")
 
+# Logout
 def logout_view(request):
     auth_logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect('home')
 
+# Dashboard
 @login_required
 def dashboard_view(request):
-    return render(request, "pages/dashboard.html")
+    total_predictions = ScanHistory.objects.filter(user=request.user).count()
+    monthly_predictions = ScanHistory.objects.filter(
+        user=request.user,
+        created_at__month=timezone.now().month
+    ).count()
 
+    # Example of extra stats
+    recent_scans = ScanHistory.objects.filter(user=request.user).order_by('-created_at')[:5]
+    common_disease = ScanHistory.objects.filter(user=request.user).values_list('disease', flat=True).order_by().distinct().first()
+    accuracy_rate = 95  # placeholder until you calculate real accuracy
+    tips = [
+        "Water plants early in the morning.",
+        "Rotate crops to prevent soil depletion.",
+        "Inspect leaves regularly for pests."
+    ]
+    random_tip = random.choice(tips)
+
+    return render(request, "pages/dashboard.html", {
+        "total_predictions": total_predictions,
+        "predictions_this_month": monthly_predictions,
+        "accuracy_rate": accuracy_rate,
+        "most_common_disease": common_disease or "N/A",
+        "recent_scans": recent_scans,
+        "tip_of_the_day": random_tip,
+        "now": timezone.now(),
+    })
+
+# Pages
+@login_required
 def new_scan_view(request):
     return render(request, "pages/new_scan.html")
 
+@login_required
 def profile_view(request):
     return render(request, "pages/profile.html")
 
+@login_required
 def history_view(request):
     return render(request, "pages/history.html")
 
+@login_required
 def settings_view(request):
     return render(request, "pages/settings.html")

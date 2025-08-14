@@ -151,10 +151,14 @@ def reset_password_view(request):
         new_password = request.POST.get("new_password")
         confirm_password = request.POST.get("confirm_password")
 
-        if user.otp != otp_entered or timezone.now() - user.otp_created_at > datetime.timedelta(minutes=5):
+        # Check OTP validity
+        if user.otp != otp_entered or timezone.now() - user.otp_created_at > timezone.timedelta(minutes=5):
             messages.error(request, "Invalid or expired OTP.")
+
+        # Check if passwords match
         elif new_password != confirm_password:
             messages.error(request, "Passwords do not match.")
+
         else:
             user.password = make_password(new_password)
             user.otp = None
@@ -172,3 +176,15 @@ def logout_view(request):
 @login_required
 def dashboard_view(request):
     return render(request, "pages/dashboard.html")
+
+def new_scan_view(request):
+    return render(request, "pages/new_scan.html")
+
+def profile_view(request):
+    return render(request, "pages/profile.html")
+
+def history_view(request):
+    return render(request, "pages/history.html")
+
+def settings_view(request):
+    return render(request, "pages/settings.html")

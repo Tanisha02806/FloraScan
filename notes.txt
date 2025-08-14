@@ -87,3 +87,5 @@ work update
 -forgot password
 -reset password
 -user dashboard
+-logout
+

@@ -10,4 +10,8 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('logout/', views.logout_view, name='logout'),
+    path('new_scan/', views.new_scan_view, name='new_scan'),
+    path('profile/', views.profile_view, name='profile'),
+    path('history/', views.history_view, name='history'),
+    path('settings/', views.settings_view, name='settings'),
 ]

@@ -1,19 +1,167 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Verify OTP - FloraScan</title>
+<meta charset="UTF-8">
+<title>Verify OTP - FloraScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        color: white;
+        overflow: hidden;
+    }
+
+    body::before {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(120deg, #4CAF50, #2E7D32, #43e97b, #38f9d7);
+        background-size: 400% 400%;
+        animation: gradientMove 15s ease infinite;
+        z-index: -1;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+        color: #fff;
+        letter-spacing: 1px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        text-align: left;
+        color: #e0f7fa;
+        font-weight: 500;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input:focus {
+        outline: none;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.7);
+    }
+
+    button {
+        width: 100%;
+        padding: 0.9rem;
+        background-color: #00bfa5;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #00e5ff;
+        color: #000;
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    p {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+
+    a {
+        color: #ffdd57;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #fff;
+    }
+
+    .message {
+        margin-bottom: 1rem;
+        padding: 0.7rem 1rem;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        color: #fff;
+        background: rgba(255,0,0,0.6);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .success-message {
+        background: rgba(76, 175, 80, 0.8);
+        color: #fff;
+    }
+
+    @media(max-width:480px){
+        .container { padding: 2rem 1.5rem; }
+        h2 { font-size: 1.5rem; }
+    }
+</style>
 </head>
 <body>
-    <h2>Enter OTP</h2>
+
+<div class="container">
+    <h2>Verify OTP</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}-message{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
-        <label>OTP:</label>
-        <input type="text" name="otp" maxlength="6" required><br><br>
-        
+        <label>Enter OTP</label>
+        <input type="text" name="otp" maxlength="6" placeholder="6-digit OTP" required>
         <button type="submit">Verify & Login</button>
     </form>
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
+</div>
+
 </body>
 </html>

@@ -2,89 +2,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard - FloraScan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Dashboard - FloraScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #00a86b, #007d57);
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    /* Reset & Fonts */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #f5f7fa; display: flex; min-height: 100vh; color: #fff; }
 
-        header {
-            background: rgba(0,0,0,0.2);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* Sidebar */
+    .sidebar {
+        width: 220px;
+        background: linear-gradient(180deg, #43e97b, #38f9d7);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        padding: 2rem 1rem;
+        transition: 0.3s;
+    }
+    .sidebar h2 {
+        font-size: 1.6rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        letter-spacing: 1px;
+        color: #fff;
+    }
+    .sidebar ul { list-style: none; flex-grow: 1; }
+    .sidebar ul li { margin: 1rem 0; }
+    .sidebar ul li a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    .sidebar ul li a:hover {
+        background: rgba(255,255,255,0.2);
+        transform: translateX(5px);
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
+    /* Header */
+    header {
+        position: fixed;
+        top: 0;
+        left: 220px;
+        right: 0;
+        height: 60px;
+        background: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 10;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    header .logo { font-weight: bold; color: #007d57; font-size: 1.3rem; }
+    header .profile a {
+        text-decoration: none;
+        color: #007d57;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border: 1px solid #007d57;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    header .profile a:hover { background: #007d57; color: white; transform: translateY(-2px); }
 
-        header a {
-            color: #ffdd57;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    /* Main Content */
+    main {
+        margin-left: 220px;
+        margin-top: 60px;
+        padding: 2rem;
+        flex: 1;
+        background: #f0f4f8;
+        min-height: calc(100vh - 60px);
+    }
 
-        header a:hover {
-            text-decoration: underline;
-        }
+    /* Intro Section */
+    .intro {
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        padding: 2rem;
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 2rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+    }
+    .intro:hover { transform: translateY(-5px); }
+    .intro h2 { margin-bottom: 0.5rem; font-size: 1.6rem; }
+    .intro p { font-size: 0.95rem; line-height: 1.5; }
 
-        main {
-            padding: 2rem;
-        }
+    /* Start Detection Button */
+    .start-detection {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+    .start-detection button {
+        background: #00a86b;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    .start-detection button:hover {
+        background: #007d57;
+        transform: translateY(-3px) scale(1.05);
+    }
 
-        .card {
-            background: rgba(255,255,255,0.1);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+    /* Past Predictions */
+    .past-predictions { margin-bottom: 2rem; }
+    .past-predictions h3 { margin-bottom: 1rem; color: #007d57; font-size: 1.3rem; }
+    .prediction-card {
+        background: white;
+        color: #333;
+        padding: 1rem 1.2rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prediction-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+    .prediction-card p { margin: 0.3rem 0; }
 
-        .card h2 {
-            margin-top: 0;
-        }
+    /* Footer */
+    footer {
+        background: #007d57;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        position: fixed;
+        bottom: 0;
+        left: 220px;
+        right: 0;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        font-size: 0.9rem;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
 
-        .welcome {
-            margin-bottom: 2rem;
-        }
-    </style>
+    /* Responsive */
+    @media(max-width: 768px) {
+        .sidebar { width: 60px; padding: 1rem 0.5rem; }
+        .sidebar h2, .sidebar ul li a { display: none; }
+        main { margin-left: 60px; padding: 1rem; }
+        header { left: 60px; padding: 0 1rem; }
+        footer { left: 60px; padding: 0.5rem; font-size: 0.8rem; }
+        .intro, .prediction-card { border-radius: 10px; padding: 1.5rem; }
+        .start-detection button { padding: 0.8rem 1.5rem; font-size: 1rem; }
+    }
+</style>
 </head>
 <body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>FloraScan</h2>
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'new_scan' %}">New Scan</a></li>
+            <li><a href="{% url 'history' %}">History</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'settings' %}">Settings</a></li>
+        </ul>
+    </div>
+
+    <!-- Header -->
     <header>
-        <h1>FloraScan Dashboard</h1>
-        <a href="{% url 'logout' %}">Logout</a>
+        <div class="logo">🌱 FloraScan</div>
+        <div class="profile">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
     </header>
 
+    <!-- Main Content -->
     <main>
-        <div class="welcome">
+        <!-- Introduction -->
+        <div class="intro">
             <h2>Welcome, {{ user.username }}!</h2>
-            <p>This is your basic dashboard. You can extend it to show your profile, orders, or plant scans.</p>
+            <p>FloraScan helps you detect plant diseases using AI. Start scanning and track your plant health effectively. Monitor past predictions and stay updated with your crops’ health.</p>
         </div>
 
-        <div class="card">
-            <h2>Profile Info</h2>
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Username:</strong> {{ user.username }}</p>
+        <!-- Start Detection -->
+        <div class="start-detection">
+            <button onclick="location.href='#'">Start Detection</button>
         </div>
 
-        <div class="card">
-            <h2>Quick Actions</h2>
-            <ul>
-                <li><a href="#">Scan a new plant</a></li>
-                <li><a href="#">View previous scans</a></li>
-                <li><a href="#">Update profile</a></li>
-            </ul>
+        <!-- Past Predictions -->
+        <div class="past-predictions">
+            <h3>Past Predictions</h3>
+            {% for prediction in user.predictions.all %}
+            <div class="prediction-card">
+                <p><strong>Plant:</strong> {{ prediction.plant_name }}</p>
+                <p><strong>Disease:</strong> {{ prediction.disease_name }}</p>
+                <p><strong>Date:</strong> {{ prediction.date|date:"M d, Y H:i" }}</p>
+            </div>
+            {% empty %}
+            <p>No previous predictions found.</p>
+            {% endfor %}
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; {{ now.year }} FloraScan. All rights reserved.
+    </footer>
+
 </body>
 </html>

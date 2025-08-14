@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scan History - FloraScan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0,0,0,0.2);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        header h1 { font-size: 1.6rem; }
+        header a {
+            color: #ffdd57;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        header a:hover { text-decoration: underline; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 70px; /* header height */
+            left: 0;
+            width: 220px;
+            height: calc(100% - 70px);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover { background: rgba(255,255,255,0.2); }
+
+        /* Main Content */
+        main {
+            margin-left: 240px;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        h2 { color: white; margin-bottom: 1rem; }
+
+        /* History Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .history-table th, .history-table td {
+            padding: 1rem;
+            text-align: left;
+            color: white;
+        }
+
+        .history-table th {
+            background: rgba(0,0,0,0.3);
+        }
+
+        .history-table tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+
+        .download-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #ffdd57;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover { background-color: #ffd700; }
+
+        /* Footer */
+        footer {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem 2rem;
+            color: white;
+            text-align: center;
+            margin-top: auto;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { position: relative; width: 100%; height: auto; flex-direction: row; justify-content: space-around; top: 0; }
+            main { margin-left: 0; margin-top: 1rem; }
+            .history-table th, .history-table td { padding: 0.5rem; font-size: 0.85rem; }
+        }
+
+        img.thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FloraScan</h1>
+        <a href="{% url 'logout' %}">Logout</a>
+    </header>
+
+    <div class="sidebar">
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'new_scan' %}">New Scan</a>
+        <a href="{% url 'history' %}">History</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'settings' %}">Settings</a>
+    </div>
+
+    <main>
+        <h2>Your Scan History</h2>
+
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Disease</th>
+                    <th>Confidence</th>
+                    <th>Date</th>
+                    <th>PDF Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scan in scans %}
+                <tr>
+                    <td><img src="{{ scan.image.url }}" alt="Plant Image" class="thumbnail"></td>
+                    <td>{{ scan.predicted_disease }}</td>
+                    <td>{{ scan.confidence }}%</td>
+                    <td>{{ scan.date|date:"d M Y, H:i" }}</td>
+                    <td>
+                        <a href="{% url 'download_pdf' scan.id %}">
+                            <button class="download-btn">Download</button>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">No scans available yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        &copy; 2025 FloraScan. All Rights Reserved.
+    </footer>
+</body>
+</html>

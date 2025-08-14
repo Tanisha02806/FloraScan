@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - FloraScan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #00a86b, #007d57);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        header a {
+            color: #ffdd57;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        .welcome {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FloraScan Dashboard</h1>
+        <a href="#">Logout</a>
+    </header>
+
+    <main>
+        <div class="welcome">
+            <h2>Welcome, {{ user.username }}!</h2>
+            <p>This is your basic dashboard. You can extend it to show your profile, orders, or plant scans.</p>
+        </div>
+
+        <div class="card">
+            <h2>Profile Info</h2>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Quick Actions</h2>
+            <ul>
+                <li><a href="#">Scan a new plant</a></li>
+                <li><a href="#">View previous scans</a></li>
+                <li><a href="#">Update profile</a></li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

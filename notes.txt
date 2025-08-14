@@ -1,0 +1,89 @@
+Core functional features
+1.Image upload and camera access
+    upload plant/leaf images from device storage
+    live capture from camera using javascript
+2.Prediction Result Display
+    detected disease name
+    confidence percentage
+    option to download a pdf report
+3.Detailed disease info
+    symptoms description
+    possible causes
+    treatment recommendations
+
+Data & Insights
+1.History of Predictions
+    Store user’s past uploads and results in database (linked to user account).
+2.Statistics Dashboard
+    Show pie charts / bar graphs of detected diseases (using Chart.js).
+    Disease trends over time.
+3.Confidence Analysis
+    Show top 3 probable diseases with confidence scores.
+
+User interface enhancement
+1. Responsive ui
+    Mobile friendly layout with css media queries
+2. Result card
+    Styled card showing image preview, disease name, and recommendations
+3. Progress loader
+    animated loader while prediction is running
+4.Dark/Light mode
+
+Advanced Features
+1.Farmer’s Guide Section
+    General crop care tips.
+    Seasonal planting recommendations.
+2.Community Forum
+    Users can ask questions or share photos for manual feedback.
+
+Backend (Django) Enhancements
+1.User Authentication
+    Login/Signup to track predictions.
+2.Admin Panel
+    Manage diseases, treatments, and user activity.
+3.Prediction Logs
+    Store model prediction time, accuracy, and inputs.
+4.Model Management
+        Option to update/replace trained model without changing code.
+
+Extra Touches for Presentation
+1.About Page → Explains the purpose, model details, and dataset used.
+2.Contact Form → For feedback or queries.
+3.Tutorial Page → “How to use” guide with images.
+
+List of pages
+1. Home Page
+    Overview of your system.
+    "Upload Image" / "Start Diagnosis" button.
+    Short intro on how it works.
+2. Disease Detection Page (Main Functionality)
+    Image upload + camera capture option.
+    Loader while processing.
+    Display predicted disease, confidence score, and treatment suggestions.
+    Detailed descriptions of common diseases.
+    Treatments, prevention tips, and images.
+    Option to download PDF reports.
+4. Prediction History (User Dashboard)
+    For logged-in users.
+    Shows past uploads, predictions, and dates.
+    Option to download PDF reports.
+5. Farmer’s Guide / Resources Page (Optional but adds value)
+    Seasonal crop care tips.
+    Weather-based suggestions.
+    Fertilizer/pesticide usage guide.
+6. About Page
+    Purpose of the project.
+    Model details (architecture, dataset size, accuracy).
+7. Contact / Feedback Page
+    Form for queries, bug reports, or suggestions.
+    Email / social media links.
+8. Login & Signup Pages (if you want accounts)
+    Secure authentication for storing prediction history.
+
+work update
+-homepage
+-login Page(otp ke through)
+-sign up page
+-forgot password
+-reset password
+-user dashboard

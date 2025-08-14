@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify OTP - FloraScan</title>
+</head>
+<body>
+    <h2>Enter OTP</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>OTP:</label>
+        <input type="text" name="otp" maxlength="6" required><br><br>
+        
+        <button type="submit">Verify & Login</button>
+    </form>
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</body>
+</html>
